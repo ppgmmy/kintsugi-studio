@@ -77,12 +77,14 @@ export async function POST(request: Request) {
       // Stripe 以「最小貨幣單位」計價：HKD 的 1 元 = 100 分
       // 例如 HK$10 → unit_amount: 1000
       // 商品圖須為公開可存取的 https URL；本機 localhost 圖請省略，避免 Session 失敗
+      // 中文檔名必須 percent-encode，否則 Stripe 會回 Invalid URL
       const absoluteImage = product.image.startsWith("http")
         ? product.image
         : `${baseUrl.replace(/\/$/, "")}${product.image}`;
+      const encodedImage = encodeURI(absoluteImage);
       const canUseImage =
-        absoluteImage.startsWith("https://") &&
-        !absoluteImage.includes("localhost");
+        encodedImage.startsWith("https://") &&
+        !encodedImage.includes("localhost");
 
       line_items.push({
         quantity,
@@ -92,7 +94,7 @@ export async function POST(request: Request) {
           product_data: {
             name: product.name,
             description: product.description.slice(0, 500),
-            ...(canUseImage ? { images: [absoluteImage] } : {}),
+            ...(canUseImage ? { images: [encodedImage] } : {}),
           },
         },
       });
