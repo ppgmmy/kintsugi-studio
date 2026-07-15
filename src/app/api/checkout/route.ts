@@ -34,11 +34,25 @@ function getStripe() {
 
 export async function POST(request: Request) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-    if (!baseUrl) {
+    const rawBaseUrl = process.env.NEXT_PUBLIC_BASE_URL?.trim();
+    if (!rawBaseUrl) {
       console.error("[checkout] 缺少 NEXT_PUBLIC_BASE_URL");
       return NextResponse.json(
         { error: "伺服器尚未設定 NEXT_PUBLIC_BASE_URL" },
+        { status: 500 },
+      );
+    }
+
+    // 正規化 Base URL：補上 https、去掉結尾斜線，避免 success_url 變成無效路徑
+    const withProtocol = /^https?:\/\//i.test(rawBaseUrl)
+      ? rawBaseUrl
+      : `https://${rawBaseUrl}`;
+    const baseUrl = withProtocol.replace(/\/$/, "");
+
+    if (!baseUrl.startsWith("https://") && !baseUrl.includes("localhost")) {
+      console.error("[checkout] NEXT_PUBLIC_BASE_URL 必須為 https：", baseUrl);
+      return NextResponse.json(
+        { error: "NEXT_PUBLIC_BASE_URL 必須使用 https 網址" },
         { status: 500 },
       );
     }
@@ -80,7 +94,7 @@ export async function POST(request: Request) {
       // 中文檔名必須 percent-encode，否則 Stripe 會回 Invalid URL
       const absoluteImage = product.image.startsWith("http")
         ? product.image
-        : `${baseUrl.replace(/\/$/, "")}${product.image}`;
+        : `${baseUrl}${product.image}`;
       const encodedImage = encodeURI(absoluteImage);
       const canUseImage =
         encodedImage.startsWith("https://") &&
@@ -102,14 +116,18 @@ export async function POST(request: Request) {
 
     const stripe = getStripe();
 
+    // 正式成功頁路徑：/checkout/success（另有 /success 相容轉址）
+    const successUrl = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${baseUrl}/checkout`;
+
     // 建立 Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       // 信用卡 + 支付寶（含 AlipayHK，視 Stripe 帳號地區／設定而定）
       payment_method_types: ["card", "alipay"],
       line_items,
-      success_url: `${baseUrl.replace(/\/$/, "")}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl.replace(/\/$/, "")}/checkout`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       locale: "zh-HK",
       ...(body.customerEmail
         ? { customer_email: body.customerEmail }
