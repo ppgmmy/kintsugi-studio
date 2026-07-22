@@ -175,7 +175,20 @@ function LatestWorkshops() {
                     <span className="font-medium text-gold">
                       {workshop.spotsLeft}
                     </span>{" "}
-                    位 · {formatHkd(workshop.price)}／人
+                    位
+                    {workshop.originalPrice ? (
+                      <>
+                        {" · "}
+                        <span className="line-through opacity-70">
+                          {formatHkd(workshop.originalPrice)}
+                        </span>{" "}
+                        <span className="font-medium text-gold">
+                          {formatHkd(workshop.price)}／人
+                        </span>
+                      </>
+                    ) : (
+                      <> · {formatHkd(workshop.price)}／人</>
+                    )}
                   </p>
                   <Link
                     href="/workshops"

@@ -42,7 +42,12 @@ export type Product = {
 export type Workshop = {
   id: string;
   title: string;
+  /** 目前售價／早鳥價（港幣） */
   price: number;
+  /** 原價（若有早鳥優惠則填寫） */
+  originalPrice?: number;
+  /** 早鳥說明，例如「25/7前」 */
+  earlyBirdLabel?: string;
   datetime: string;
   location: string;
   spotsLeft: number;
@@ -268,11 +273,14 @@ export const WORKSHOPS: Workshop[] = [
     id: "ws-moon-mirror",
     title: "藝境月圓・月亮鏡工作坊",
     price: 200,
+    originalPrice: 280,
+    earlyBirdLabel: "25/7前",
     datetime: "逢星期一至六 12:00 - 17:00",
     location: "荃灣 COOLISTIC Space 共享空間",
     spotsLeft: 3,
-    description: "親手創作屬於你的月亮藝術鏡，體驗繕物藝術之美。",
-    image: "/images/workshops/kintsugi.jpg",
+    description:
+      "親手創作屬於你的月亮藝術鏡，體驗繕物藝術之美。在手工藝中，練就接納與轉化。即日起至 7月 25日前報名，即享早鳥優惠！",
+    image: "/images/workshops/moon-mirror-workshop.jpg",
   },
 ];
 

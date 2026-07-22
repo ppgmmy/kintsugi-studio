@@ -110,9 +110,27 @@ function BookingModal({ workshop, open, onClose }: BookingModalProps) {
               <p className="text-sm leading-7 text-muted">
                 <span className="text-foreground">{workshop.title}</span>
                 <br />
-                {workshop.datetime} · {formatHkd(workshop.price)}／人
+                {workshop.datetime}
                 <br />
                 {workshop.location}
+                <br />
+                {workshop.originalPrice ? (
+                  <>
+                    <span className="line-through opacity-70">
+                      原價 {formatHkd(workshop.originalPrice)}／人
+                    </span>
+                    <br />
+                    <span className="font-medium text-gold">
+                      早鳥優惠價
+                      {workshop.earlyBirdLabel
+                        ? ` (${workshop.earlyBirdLabel})`
+                        : ""}
+                      ：{formatHkd(workshop.price)}／人
+                    </span>
+                  </>
+                ) : (
+                  <>{formatHkd(workshop.price)}／人</>
+                )}
               </p>
 
               <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
@@ -273,10 +291,29 @@ export function WorkshopCatalog() {
                   </div>
                   <div className="flex flex-wrap gap-x-2">
                     <dt className="text-foreground/80">費用</dt>
-                    <dd className="text-foreground">
-                      {formatHkd(workshop.price)}／人
+                    <dd>
+                      {workshop.originalPrice ? (
+                        <span className="line-through opacity-70">
+                          原價 {formatHkd(workshop.originalPrice)}／人
+                        </span>
+                      ) : (
+                        <span className="text-foreground">
+                          {formatHkd(workshop.price)}／人
+                        </span>
+                      )}
                     </dd>
                   </div>
+                  {workshop.originalPrice ? (
+                    <div className="flex flex-wrap gap-x-2">
+                      <dt className="text-foreground/80">早鳥優惠</dt>
+                      <dd className="font-medium text-gold">
+                        {workshop.earlyBirdLabel
+                          ? `${workshop.earlyBirdLabel}：`
+                          : ""}
+                        {formatHkd(workshop.price)}／人
+                      </dd>
+                    </div>
+                  ) : null}
                 </dl>
 
                 <div className="mt-8">
