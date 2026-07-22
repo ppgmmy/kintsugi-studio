@@ -7,8 +7,18 @@
 /* 型別定義                                                                    */
 /* -------------------------------------------------------------------------- */
 
-/** 商品分類：蠟燭／護膚／手作藝品／優惠套裝 */
-export type ProductCategory = "candles" | "skincare" | "crafts" | "sets";
+/**
+ * 商品分類
+ * - candles：單品蠟燭
+ * - skincare：天然護理系列
+ * - candle_sets / winter_sets / surprise_sets：各類優惠套裝
+ */
+export type ProductCategory =
+  | "candles"
+  | "skincare"
+  | "candle_sets"
+  | "winter_sets"
+  | "surprise_sets";
 
 export type Product = {
   id: string;
@@ -22,6 +32,11 @@ export type Product = {
   category: ProductCategory;
   /** 圖片路徑（放在 public 底下） */
   image: string;
+  /**
+   * AI 生圖 Prompt（金繕美學）
+   * 用於之後生成／替換商品圖；統一風格：溫暖奢華、日系金繕、石板／木質／亞麻背景、金箔與柔和光影
+   */
+  imagePrompt?: string;
 };
 
 export type Workshop = {
@@ -42,12 +57,16 @@ export type Workshop = {
   image: string;
 };
 
+/** 統一附加在 AI Prompt 尾端的金繕視覺標準 */
+export const KINTSUGI_VISUAL_STYLE =
+  "Warm luxurious Japanese Kintsugi aesthetic, natural stone/wood/linen background, gold leaf and golden line accents, soft artistic lighting.";
+
 /* -------------------------------------------------------------------------- */
 /* 商品資料 PRODUCTS                                                           */
 /* -------------------------------------------------------------------------- */
 
 export const PRODUCTS: Product[] = [
-  // 一、特色蠟燭系列
+  // 一、特色蠟燭系列（單品）
   {
     id: "candle-flavor",
     name: "香味蠟燭 (琥珀樽裝)",
@@ -76,7 +95,7 @@ export const PRODUCTS: Product[] = [
     image: "/images/products/大沙蠟蠟燭.jpg",
   },
 
-  // 二、護膚與天然產品
+  // 二、天然護理系列（含肥皂、潤唇膏與本次更新項目）
   {
     id: "soap-small",
     name: "洗手肥皂 (小) - 茶樹+佛手柑",
@@ -104,6 +123,8 @@ export const PRODUCTS: Product[] = [
     category: "skincare",
     image: "/images/products/天然潤唇膏.jpg",
   },
+
+  // —— 商品 1
   {
     id: "hand-cream-30ml",
     name: "天然潤膚霜 (30ml 大樽裝)",
@@ -112,7 +133,11 @@ export const PRODUCTS: Product[] = [
       "琥珀金黃凝膠質地，極易吸收。深層滋潤乾燥肌膚，散發淡淡草本香氣。",
     category: "skincare",
     image: "/images/products/潤膚霜.jpg",
+    imagePrompt:
+      "A high-quality product photo of a 30ml Natural Moisturizing Cream in a large transparent glass jar with a wide mouth and a dark wood lid intricately decorated with gilded Kintsugi-style filigree. Placed on a textured stone slab with scattered gold powder, gold leaf flakes, and warm soft lighting. " +
+      KINTSUGI_VISUAL_STYLE,
   },
+  // —— 商品 2
   {
     id: "hand-cream-20ml",
     name: "天然潤膚霜 (20ml 精緻裝)",
@@ -120,102 +145,124 @@ export const PRODUCTS: Product[] = [
     description: "隨身攜帶的深層保濕滋潤霜。全天然溫和成分，四季合用。",
     category: "skincare",
     image: "/images/products/潤膚霜.jpg",
+    imagePrompt:
+      "A refined product photo of a 20ml Natural Moisturizing Cream in a slender glass jar with a gold metal lid featuring a fine Kintsugi filigree network pattern. Placed on a small ceramic dish with a miniature brush and gold leaf beside it. " +
+      KINTSUGI_VISUAL_STYLE,
   },
-
-  // ⚠️ 以下為待更新圖片的產品（暫時使用 placeholder 確保部署順利）
+  // —— 商品 3
   {
     id: "mosquito-balm",
     name: "天然防蚊膏",
     price: 28,
     description:
-      "不含DEET，天然精油配方。4歲以上適用。(注意：孕婦及G6PD人士忌用) *相片即將更新*",
+      "不含DEET，天然精油配方。4歲以上適用。(注意：孕婦及G6PD人士忌用)",
     category: "skincare",
     image: "/images/products/placeholder.jpg",
+    imagePrompt:
+      "A natural product photo of Mosquito Repellent Balm in a small round gilded metal tin with a golden-engraved Kintsugi herbal illustration on the lid. Placed on a woven linen cloth with sprigs of lemongrass and golden accents. " +
+      KINTSUGI_VISUAL_STYLE,
   },
+  // —— 商品 4
   {
     id: "mosquito-brick",
     name: "天然防蚊磚",
     price: 18,
-    description:
-      "適合掛在窗前、床頭，持續散發溫和草本驅蚊香氣。 *相片即將更新*",
+    description: "適合掛在窗前、床頭，持續散發溫和草本驅蚊香氣。",
     category: "skincare",
     image: "/images/products/placeholder.jpg",
-  },
-  {
-    id: "craft-xmas-tree",
-    name: "聖誕樹 繞線畫",
-    price: 238,
-    description:
-      "手工精製聖誕幾何繞線畫，節日送禮或點綴家居極佳。 *相片即將更新*",
-    category: "crafts",
-    image: "/images/products/placeholder.jpg",
-  },
-  {
-    id: "craft-santa",
-    name: "聖誕老人 繞線畫",
-    price: 318,
-    description:
-      "細緻彩色線條交織出精緻的聖誕老人，滿滿的手作溫度。 *相片即將更新*",
-    category: "crafts",
-    image: "/images/products/placeholder.jpg",
+    imagePrompt:
+      "An artistic product photo of a solid natural beige Mosquito Repellent Bar with Kintsugi network patterns. Partially wrapped in textured linen cloth bound with delicate golden wire, placed in an artistic stone basin with gold flakes. " +
+      KINTSUGI_VISUAL_STYLE,
   },
 
-  // 三、超值優惠套裝（共用現有商品相片）
+  // 三、蠟燭愛好者套裝
+  // —— 商品 5
   {
     id: "set-candle-family",
     name: "【蠟燭愛好者套裝】小沙蠟 + 大沙蠟 子母裝",
     price: 128,
     description: "精選沙蠟組合！比單買更划算 (原價$146，即慳$18)。",
-    category: "sets",
+    category: "candle_sets",
     image: "/images/products/大沙蠟蠟燭.jpg",
+    imagePrompt:
+      "A luxury product catalog photo featuring a Small Sand Wax and Large Sand Wax candle jar side-by-side in a mother-and-child arrangement. Clear glass jars showing layered sand wax with embedded gold leaf and Kintsugi patterns, dark wood lids, placed on a polished wood surface. " +
+      KINTSUGI_VISUAL_STYLE,
   },
+  // —— 商品 6
   {
     id: "set-candle-double",
     name: "【蠟燭愛好者套裝】香味蠟燭 2個",
     price: 78,
     description: "雙倍暖意！琥珀樽香味蠟燭超值裝 (原價$96，即慳$18)。",
-    category: "sets",
+    category: "candle_sets",
     image: "/images/products/香味蠟燭.jpg",
+    imagePrompt:
+      "An elegant product catalog photo of 2 different scented candles in glass jars with unique Kintsugi line patterns engraved in gold. One candle is lit with a soft warm flame, placed on a stone slab with dried flowers and Kintsugi pottery details. " +
+      KINTSUGI_VISUAL_STYLE,
   },
+
+  // 四、冬日滋潤套裝
+  // —— 商品 7
   {
     id: "set-moist-lip-hand",
     name: "【冬日滋潤套裝】潤唇膏 + 20ml潤膚霜",
     price: 50,
     description: "唇齒與肌膚的雙重全天然滋潤保護 (原價$66，即慳$16)。",
-    category: "sets",
+    category: "winter_sets",
     image: "/images/products/潤膚霜.jpg",
+    imagePrompt:
+      "A curated product photo featuring a slim gilded Lip Balm tube with Kintsugi patterns alongside a 20ml Natural Moisturizing Cream jar. Presented together on an artistic ceramic dish with gold leaf flakes and a miniature brush. " +
+      KINTSUGI_VISUAL_STYLE,
   },
+  // —— 商品 8
   {
     id: "set-hand-family",
     name: "【冬日滋潤套裝】大(30ml) + 小(20ml)潤膚霜 子母裝",
     price: 52,
     description: "一樽放屋企，一樽隨身帶。全天候保濕 (原價$66，即慳$14)。",
-    category: "sets",
+    category: "winter_sets",
     image: "/images/products/潤膚霜.jpg",
+    imagePrompt:
+      "A luxurious product photo of a 30ml large cream jar and a 20ml small cream jar side-by-side in a mother-and-child arrangement. Both featuring Kintsugi metal/wood lids, set on a polished wood table with a Kintsugi-repaired ceramic bowl and gold leaf stack. " +
+      KINTSUGI_VISUAL_STYLE,
   },
+  // —— 商品 9
   {
     id: "set-hand-double",
     name: "【冬日滋潤套裝】20ml潤膚霜 2支",
     price: 40,
     description: "隨身保濕超值分享裝 (原價$56，即慳$16)。",
-    category: "sets",
+    category: "winter_sets",
     image: "/images/products/潤膚霜.jpg",
+    imagePrompt:
+      "An elegant product photo of two identical 20ml Natural Moisturizing Cream jars with gold metal Kintsugi lids. One open displaying the rich cream texture, set on a stone slab with gold leaf flakes. " +
+      KINTSUGI_VISUAL_STYLE,
   },
+
+  // 五、驚喜體驗套裝
+  // —— 商品 10
   {
     id: "set-surprise-candle-hand",
     name: "【驚喜體驗套裝】大沙蠟蠟燭 + 20ml潤膚霜",
     price: 102,
     description: "香薰氛圍與天然滋潤的完美雙重享受 (原價$116，即慳$14)。",
-    category: "sets",
+    category: "surprise_sets",
     image: "/images/products/大沙蠟蠟燭.jpg",
+    imagePrompt:
+      "A luxurious set photo featuring a lit Large Sand Wax Candle jar and a 20ml Natural Moisturizing Cream bottle with gold Kintsugi details. Glowing warmly on a polished wood table with gold powder and gold leaf accents. " +
+      KINTSUGI_VISUAL_STYLE,
   },
+  // —— 商品 11
   {
     id: "set-soap-double",
     name: "【驚喜體驗套裝】洗手肥皂(小) 2件",
     price: 48,
     description: "天然茶樹佛手柑牛奶皂，雙重溫和洗護 (原價$56，即慳$8)。",
-    category: "sets",
+    category: "surprise_sets",
     image: "/images/products/小洗手肥皂.jpg",
+    imagePrompt:
+      "An artistic product photo of 2 small natural hand soap bars shaped with Kintsugi network patterns. Bound in linen cloth with golden wire, set inside an artistic stone basin with gold flakes and a lacquer brush. " +
+      KINTSUGI_VISUAL_STYLE,
   },
 ];
 
@@ -259,7 +306,8 @@ export function getLatestWorkshops(count = 2): Workshop[] {
 /** 商品分類標籤（繁中） */
 export const PRODUCT_CATEGORY_LABELS: Record<ProductCategory, string> = {
   candles: "特色蠟燭",
-  skincare: "護膚天然",
-  crafts: "手作藝品",
-  sets: "優惠套裝",
+  skincare: "天然護理系列",
+  candle_sets: "蠟燭愛好者套裝",
+  winter_sets: "冬日滋潤套裝",
+  surprise_sets: "驚喜體驗套裝",
 };

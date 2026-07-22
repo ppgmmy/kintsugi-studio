@@ -18,8 +18,9 @@ const CATEGORIES: { id: "all" | ProductCategory; label: string }[] = [
   { id: "all", label: "全部" },
   { id: "candles", label: PRODUCT_CATEGORY_LABELS.candles },
   { id: "skincare", label: PRODUCT_CATEGORY_LABELS.skincare },
-  { id: "crafts", label: PRODUCT_CATEGORY_LABELS.crafts },
-  { id: "sets", label: PRODUCT_CATEGORY_LABELS.sets },
+  { id: "candle_sets", label: PRODUCT_CATEGORY_LABELS.candle_sets },
+  { id: "winter_sets", label: PRODUCT_CATEGORY_LABELS.winter_sets },
+  { id: "surprise_sets", label: PRODUCT_CATEGORY_LABELS.surprise_sets },
 ];
 
 /* -------------------------------------------------------------------------- */
