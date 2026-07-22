@@ -265,14 +265,13 @@ export const PRODUCTS: Product[] = [
 
 export const WORKSHOPS: Workshop[] = [
   {
-    id: "ws-kintsugi-exp",
-    title: "基礎金繕修復體驗班",
-    price: 680,
-    datetime: "逢星期六 14:00 - 16:00",
-    location: "Kintsugi Studio 本部",
-    spotsLeft: 5,
-    description:
-      "體驗傳統金繕工藝，親手將破碎瓷器轉化為生命獨特的光芒。",
+    id: "ws-moon-mirror",
+    title: "藝境月圓・月亮鏡工作坊",
+    price: 200,
+    datetime: "逢星期一至六 12:00 - 17:00",
+    location: "荃灣 COOLISTIC Space 共享空間",
+    spotsLeft: 3,
+    description: "親手創作屬於你的月亮藝術鏡，體驗繕物藝術之美。",
     image: "/images/workshops/kintsugi.jpg",
   },
 ];
