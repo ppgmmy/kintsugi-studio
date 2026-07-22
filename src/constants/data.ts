@@ -30,43 +30,36 @@ export type Product = {
   description: string;
   /** 類別 */
   category: ProductCategory;
-  /** 圖片路徑（放在 public 底下） */
+  /** 圖片路徑（放在 public 底下；英文檔名避免 Stripe URL 編碼問題） */
   image: string;
   /**
-   * AI 生圖 Prompt（金繕美學）
-   * 用於之後生成／替換商品圖；統一風格：溫暖奢華、日系金繕、石板／木質／亞麻背景、金箔與柔和光影
+   * AI 生圖 Prompt
+   * 日系自然極簡／侘寂：純白米杏、淡木、亞麻、晨光；無黑金奢華、無文字
    */
   imagePrompt?: string;
 };
 
 export type Workshop = {
   id: string;
-  /** 工作坊主題 */
   title: string;
-  /** 港幣價格（數字） */
   price: number;
-  /** 日期時間（全站統一使用 datetime） */
   datetime: string;
-  /** 地點 */
   location: string;
-  /** 剩餘名額 */
   spotsLeft: number;
-  /** 課程描述 */
   description: string;
-  /** 圖片路徑 */
   image: string;
 };
 
-/** 統一附加在 AI Prompt 尾端的金繕視覺標準 */
+/** 統一附加在 AI Prompt 尾端的侘寂視覺標準 */
 export const KINTSUGI_VISUAL_STYLE =
-  "Warm luxurious Japanese Kintsugi aesthetic, natural stone/wood/linen background, gold leaf and golden line accents, soft artistic lighting.";
+  "Japanese wabi-sabi natural minimalist aesthetic: pure white, beige, light wood, earthy tones, soft morning daylight, linen and handmade ceramics. No black-gold luxury, no readable text, no logos.";
 
 /* -------------------------------------------------------------------------- */
 /* 商品資料 PRODUCTS                                                           */
 /* -------------------------------------------------------------------------- */
 
 export const PRODUCTS: Product[] = [
-  // 一、特色蠟燭系列（單品）
+  // 一、特色蠟燭系列（單品，沿用既有圖）
   {
     id: "candle-flavor",
     name: "香味蠟燭 (琥珀樽裝)",
@@ -95,7 +88,7 @@ export const PRODUCTS: Product[] = [
     image: "/images/products/大沙蠟蠟燭.jpg",
   },
 
-  // 二、天然護理系列（含肥皂、潤唇膏與本次更新項目）
+  // 二、天然護理系列
   {
     id: "soap-small",
     name: "洗手肥皂 (小) - 茶樹+佛手柑",
@@ -124,7 +117,7 @@ export const PRODUCTS: Product[] = [
     image: "/images/products/天然潤唇膏.jpg",
   },
 
-  // —— 商品 1
+  // —— 商品 1：天然潤膚霜 30ml（新圖）
   {
     id: "hand-cream-30ml",
     name: "天然潤膚霜 (30ml 大樽裝)",
@@ -132,24 +125,24 @@ export const PRODUCTS: Product[] = [
     description:
       "琥珀金黃凝膠質地，極易吸收。深層滋潤乾燥肌膚，散發淡淡草本香氣。",
     category: "skincare",
-    image: "/images/products/hand-cream-30ml.jpg",
+    image: "/images/products/cream-30ml.jpg",
     imagePrompt:
-      "A high-quality product photo of a 30ml Natural Moisturizing Cream in a large transparent glass jar with a wide mouth and a dark wood lid intricately decorated with gilded Kintsugi-style filigree. Placed on a textured stone slab with scattered gold powder, gold leaf flakes, and warm soft lighting. " +
+      "A clean, natural product photograph of a 30ml Natural Moisturizing Cream in a transparent glass jar with a light oak wood lid. Placed on a light beige textured linen cloth with soft natural morning sunlight, shadow of dried botanical herbs in the background. Minimalist Japanese organic lifestyle aesthetic. " +
       KINTSUGI_VISUAL_STYLE,
   },
-  // —— 商品 2
+  // —— 商品 2：天然潤膚霜 20ml（新圖）
   {
     id: "hand-cream-20ml",
     name: "天然潤膚霜 (20ml 精緻裝)",
     price: 28,
     description: "隨身攜帶的深層保濕滋潤霜。全天然溫和成分，四季合用。",
     category: "skincare",
-    image: "/images/products/hand-cream-20ml.jpg",
+    image: "/images/products/cream-20ml.jpg",
     imagePrompt:
-      "A refined product photo of a 20ml Natural Moisturizing Cream in a slender glass jar with a gold metal lid featuring a fine Kintsugi filigree network pattern. Placed on a small ceramic dish with a miniature brush and gold leaf beside it. " +
+      "A delicate product photograph of a small 20ml Natural Moisturizing Cream in a slender clear glass jar with a light bamboo cap. Resting on a matte off-white handcrafted ceramic dish alongside a small sprig of dried lavender. Warm, natural, clean daylight. " +
       KINTSUGI_VISUAL_STYLE,
   },
-  // —— 商品 3
+  // —— 商品 3：天然防蚊膏（新圖）
   {
     id: "mosquito-balm",
     name: "天然防蚊膏",
@@ -159,10 +152,10 @@ export const PRODUCTS: Product[] = [
     category: "skincare",
     image: "/images/products/mosquito-balm.jpg",
     imagePrompt:
-      "A natural product photo of Mosquito Repellent Balm in a small round gilded metal tin with a golden-engraved Kintsugi herbal illustration on the lid. Placed on a woven linen cloth with sprigs of lemongrass and golden accents. " +
+      "A natural product photo of Mosquito Repellent Balm in a minimal round champagne-silver aluminum tin with a minimalist botanical line illustration label. Placed on a light raw wood table surrounded by fresh green lemongrass leaves. Bright, airy, and fresh. " +
       KINTSUGI_VISUAL_STYLE,
   },
-  // —— 商品 4
+  // —— 商品 4：天然防蚊磚（新圖）
   {
     id: "mosquito-brick",
     name: "天然防蚊磚",
@@ -171,7 +164,7 @@ export const PRODUCTS: Product[] = [
     category: "skincare",
     image: "/images/products/mosquito-brick.jpg",
     imagePrompt:
-      "An artistic product photo of a solid natural beige Mosquito Repellent Bar with Kintsugi network patterns. Partially wrapped in textured linen cloth bound with delicate golden wire, placed in an artistic stone basin with gold flakes. " +
+      "An earthy product photograph of a solid cream-beige Natural Mosquito Repellent Bar. Partially wrapped in unbleached linen paper tied with natural jute twine. Set on a smooth light-gray river stone slab with soft morning window light. " +
       KINTSUGI_VISUAL_STYLE,
   },
 
@@ -185,7 +178,7 @@ export const PRODUCTS: Product[] = [
     category: "candle_sets",
     image: "/images/products/set-candle-family.jpg",
     imagePrompt:
-      "A luxury product catalog photo featuring a Small Sand Wax and Large Sand Wax candle jar side-by-side in a mother-and-child arrangement. Clear glass jars showing layered sand wax with embedded gold leaf and Kintsugi patterns, dark wood lids, placed on a polished wood surface. " +
+      "A cozy natural product catalog photo featuring a Small Sand Wax and Large Sand Wax candle jar side-by-side. Clear glass jars revealing subtle natural sand layers, fitted with light wood lids, placed on a light oak coffee table under warm ambient sunlight. " +
       KINTSUGI_VISUAL_STYLE,
   },
   // —— 商品 6
@@ -197,7 +190,7 @@ export const PRODUCTS: Product[] = [
     category: "candle_sets",
     image: "/images/products/set-candle-double.jpg",
     imagePrompt:
-      "An elegant product catalog photo of 2 different scented candles in glass jars with unique Kintsugi line patterns engraved in gold. One candle is lit with a soft warm flame, placed on a stone slab with dried flowers and Kintsugi pottery details. " +
+      "An aesthetic catalog photo of 2 scented soy candles in clear glass with minimal beige labels without readable text. One candle is lit with a soft warm flame. Set against a light cream plaster wall with dried eucalyptus branches nearby. Warm and relaxing atmosphere. " +
       KINTSUGI_VISUAL_STYLE,
   },
 
@@ -211,7 +204,7 @@ export const PRODUCTS: Product[] = [
     category: "winter_sets",
     image: "/images/products/set-moist-lip-hand.jpg",
     imagePrompt:
-      "A curated product photo featuring a slim gilded Lip Balm tube with Kintsugi patterns alongside a 20ml Natural Moisturizing Cream jar. Presented together on an artistic ceramic dish with gold leaf flakes and a miniature brush. " +
+      "A gentle product photo featuring a minimal bamboo/beige Lip Balm tube next to a 20ml Natural Moisturizing Cream jar. Displayed on a beige coarse linen towel with soft sunlight casting organic shadows. Minimalist skin care concept. " +
       KINTSUGI_VISUAL_STYLE,
   },
   // —— 商品 8
@@ -223,7 +216,7 @@ export const PRODUCTS: Product[] = [
     category: "winter_sets",
     image: "/images/products/set-hand-family.jpg",
     imagePrompt:
-      "A luxurious product photo of a 30ml large cream jar and a 20ml small cream jar side-by-side in a mother-and-child arrangement. Both featuring Kintsugi metal/wood lids, set on a polished wood table with a Kintsugi-repaired ceramic bowl and gold leaf stack. " +
+      "A natural catalog photo showing a 30ml large cream jar and a 20ml small cream jar together. Light wood caps and clean paper labels without readable text, sitting on a light wooden tray with an organic earthy aesthetic. " +
       KINTSUGI_VISUAL_STYLE,
   },
   // —— 商品 9
@@ -235,7 +228,7 @@ export const PRODUCTS: Product[] = [
     category: "winter_sets",
     image: "/images/products/set-hand-double.jpg",
     imagePrompt:
-      "An elegant product photo of two identical 20ml Natural Moisturizing Cream jars with gold metal Kintsugi lids. One open displaying the rich cream texture, set on a stone slab with gold leaf flakes. " +
+      "A clean product photo of two 20ml Natural Moisturizing Cream glass jars with light wooden caps. One jar open showing rich white cream texture, set on a light beige stone surface under soft diffused daylight. " +
       KINTSUGI_VISUAL_STYLE,
   },
 
@@ -249,7 +242,7 @@ export const PRODUCTS: Product[] = [
     category: "surprise_sets",
     image: "/images/products/set-surprise-candle-hand.jpg",
     imagePrompt:
-      "A luxurious set photo featuring a lit Large Sand Wax Candle jar and a 20ml Natural Moisturizing Cream bottle with gold Kintsugi details. Glowing warmly on a polished wood table with gold powder and gold leaf accents. " +
+      "A warm lifestyle product photo featuring a lit Large Sand Wax Candle in clear glass and a 20ml Natural Moisturizing Cream jar with light wood lid. Placed on a cozy wooden desk next to an off-white ceramic mug under soft evening light. " +
       KINTSUGI_VISUAL_STYLE,
   },
   // —— 商品 11
@@ -261,7 +254,7 @@ export const PRODUCTS: Product[] = [
     category: "surprise_sets",
     image: "/images/products/set-soap-double.jpg",
     imagePrompt:
-      "An artistic product photo of 2 small natural hand soap bars shaped with Kintsugi network patterns. Bound in linen cloth with golden wire, set inside an artistic stone basin with gold flakes and a lacquer brush. " +
+      "A handcrafted product photo of 2 small natural oatmeal-beige soap bars. Wrapped neatly in parchment paper with hemp string. Displayed in an unglazed clay soap dish on a light marble or travertine slab. Pure, organic, and clean. " +
       KINTSUGI_VISUAL_STYLE,
   },
 ];
@@ -288,22 +281,18 @@ export const WORKSHOPS: Workshop[] = [
 /* 輔助函式                                                                    */
 /* -------------------------------------------------------------------------- */
 
-/** 統一港幣顯示，例如 48 → HK$ 48 */
 export function formatHkd(price: number): string {
   return `HK$ ${price.toLocaleString("en-HK")}`;
 }
 
-/** 首頁精選：取前 3 件商品 */
 export function getFeaturedProducts(count = 3): Product[] {
   return PRODUCTS.slice(0, count);
 }
 
-/** 首頁最新工作坊：依陣列順序取前 N 筆 */
 export function getLatestWorkshops(count = 2): Workshop[] {
   return WORKSHOPS.slice(0, count);
 }
 
-/** 商品分類標籤（繁中） */
 export const PRODUCT_CATEGORY_LABELS: Record<ProductCategory, string> = {
   candles: "特色蠟燭",
   skincare: "天然護理系列",
