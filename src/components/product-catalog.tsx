@@ -103,20 +103,20 @@ export function ProductCatalog() {
                 <p className="text-[11px] tracking-[0.18em] text-gold">
                   {PRODUCT_CATEGORY_LABELS[product.category]}
                 </p>
-                <h2 className="mt-1.5 font-serif text-xl text-foreground">
+                <h2 className="mt-1.5 font-serif text-base leading-snug text-foreground sm:text-xl">
                   {product.name}
                 </h2>
                 <p className="mt-2 text-sm tracking-wide text-gold">
                   {formatHkd(product.price)}
                 </p>
-                <p className="mt-3 flex-1 text-sm leading-7 text-muted">
+                <p className="mt-3 flex-1 text-xs leading-6 text-muted sm:text-sm sm:leading-7">
                   {product.description}
                 </p>
 
                 <button
                   type="button"
                   onClick={() => handleAdd(product.id)}
-                  className="mt-6 w-full border border-gold/70 bg-surface px-4 py-3 text-xs tracking-[0.18em] text-foreground transition-colors duration-300 hover:border-gold hover:bg-gold hover:text-surface"
+                  className="mt-6 w-full border border-gold/70 bg-surface px-3 py-2.5 text-[11px] tracking-[0.14em] text-foreground transition-colors duration-300 hover:border-gold hover:bg-gold hover:text-surface sm:px-4 sm:py-3 sm:text-xs sm:tracking-[0.18em]"
                 >
                   {addedId === product.id ? "已加入 ✓" : "加入購物車"}
                 </button>

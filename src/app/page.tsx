@@ -81,7 +81,7 @@ function FeaturedGallery() {
 
         <div className="gold-hairline mx-auto mt-10 w-16" />
 
-        <ul className="mt-14 grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
+        <ul className="mt-14 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-3 lg:gap-10">
           {featuredProducts.map((product, index) => (
             <li
               key={product.id}
@@ -95,12 +95,12 @@ function FeaturedGallery() {
                     alt={product.name}
                     fill
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="(max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
 
                 <div className="mt-6 space-y-2 text-center">
-                  <h3 className="font-serif text-xl text-foreground">
+                  <h3 className="font-serif text-base text-foreground sm:text-xl">
                     {product.name}
                   </h3>
                   <p className="text-sm tracking-wide text-muted">
