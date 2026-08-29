@@ -44,6 +44,8 @@ export function CheckoutView() {
           // 傳送 id / name / price / quantity（後端仍會以 PRODUCTS 覆寫價格）
           items: items.map((item) => ({
             id: item.id,
+            productId: item.productId,
+            variantId: item.variantId,
             name: item.name,
             price: item.price,
             quantity: item.quantity,
@@ -140,6 +142,9 @@ export function CheckoutView() {
                         </div>
                         <p className="mt-1 text-xs text-muted">
                           單價 {formatHkd(item.price)}
+                          {item.variantLabel
+                            ? ` · 香味：${item.variantLabel}`
+                            : ""}
                         </p>
 
                         <div className="mt-auto flex items-center justify-between pt-3">

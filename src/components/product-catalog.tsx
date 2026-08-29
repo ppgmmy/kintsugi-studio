@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
   formatHkd,
@@ -42,6 +43,7 @@ export function ProductCatalog() {
   function handleAdd(productId: string) {
     const product = PRODUCTS.find((item) => item.id === productId);
     if (!product) return;
+    if (product.variants?.length) return;
     addToCart(product);
     setAddedId(productId);
     window.setTimeout(() => {
@@ -82,48 +84,79 @@ export function ProductCatalog() {
       </p>
 
       <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-14">
-        {filtered.map((product) => (
-          <li key={product.id} className="animate-fade-up group">
-            <article className="flex h-full flex-col">
-              <div className="relative aspect-[4/5] overflow-hidden bg-surface-soft">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                  sizes="(max-width: 1024px) 50vw, 33vw"
-                />
-                <div
-                  className="pointer-events-none absolute inset-4 border border-gold/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                  aria-hidden="true"
-                />
-              </div>
+        {filtered.map((product) => {
+          const hasVariants = Boolean(product.variants?.length);
+          const hasDiscount =
+            Boolean(product.originalPrice) &&
+            (product.originalPrice as number) > product.price;
 
-              <div className="mt-5 flex flex-1 flex-col">
-                <p className="text-[11px] tracking-[0.18em] text-gold">
-                  {PRODUCT_CATEGORY_LABELS[product.category]}
-                </p>
-                <h2 className="mt-1.5 font-serif text-base leading-snug text-foreground sm:text-xl">
-                  {product.name}
-                </h2>
-                <p className="mt-2 text-sm tracking-wide text-gold">
-                  {formatHkd(product.price)}
-                </p>
-                <p className="mt-3 flex-1 text-xs leading-6 text-muted sm:text-sm sm:leading-7">
-                  {product.description}
-                </p>
-
-                <button
-                  type="button"
-                  onClick={() => handleAdd(product.id)}
-                  className="mt-6 w-full border border-gold/70 bg-surface px-3 py-2.5 text-[11px] tracking-[0.14em] text-foreground transition-colors duration-300 hover:border-gold hover:bg-gold hover:text-surface sm:px-4 sm:py-3 sm:text-xs sm:tracking-[0.18em]"
+          return (
+            <li key={product.id} className="animate-fade-up group">
+              <article className="flex h-full flex-col">
+                <Link
+                  href={`/products/${product.id}`}
+                  className="relative aspect-[4/5] overflow-hidden bg-surface-soft"
                 >
-                  {addedId === product.id ? "已加入 ✓" : "加入購物車"}
-                </button>
-              </div>
-            </article>
-          </li>
-        ))}
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    sizes="(max-width: 1024px) 50vw, 33vw"
+                  />
+                  <div
+                    className="pointer-events-none absolute inset-4 border border-gold/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    aria-hidden="true"
+                  />
+                </Link>
+
+                <div className="mt-5 flex flex-1 flex-col">
+                  <p className="text-[11px] tracking-[0.18em] text-gold">
+                    {PRODUCT_CATEGORY_LABELS[product.category]}
+                  </p>
+                  <h2 className="mt-1.5 font-serif text-base leading-snug text-foreground sm:text-xl">
+                    <Link
+                      href={`/products/${product.id}`}
+                      className="transition-colors hover:text-gold"
+                    >
+                      {product.name}
+                    </Link>
+                  </h2>
+                  <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                    <p className="text-sm tracking-wide text-gold">
+                      {formatHkd(product.price)}
+                    </p>
+                    {hasDiscount ? (
+                      <p className="text-xs text-muted line-through">
+                        {formatHkd(product.originalPrice as number)}
+                      </p>
+                    ) : null}
+                  </div>
+                  <p className="mt-3 flex-1 text-xs leading-6 text-muted sm:text-sm sm:leading-7">
+                    {product.description}
+                  </p>
+
+                  {hasVariants ? (
+                    <Link
+                      href={`/products/${product.id}`}
+                      className="mt-6 block w-full border border-gold/70 bg-surface px-3 py-2.5 text-center text-[11px] tracking-[0.14em] text-foreground transition-colors duration-300 hover:border-gold hover:bg-gold hover:text-surface sm:px-4 sm:py-3 sm:text-xs sm:tracking-[0.18em]"
+                    >
+                      選擇香味
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleAdd(product.id)}
+                      className="mt-6 w-full border border-gold/70 bg-surface px-3 py-2.5 text-[11px] tracking-[0.14em] text-foreground transition-colors duration-300 hover:border-gold hover:bg-gold hover:text-surface sm:px-4 sm:py-3 sm:text-xs sm:tracking-[0.18em]"
+                    >
+                      {addedId === product.id ? "已加入 ✓" : "加入購物車"}
+                    </button>
+                  )}
+                </div>
+              </article>
+            </li>
+          );
+        })}
       </ul>
 
       {filtered.length === 0 && (

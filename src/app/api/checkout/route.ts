@@ -1,6 +1,11 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
-import { PRODUCTS } from "@/constants/data";
+import {
+  formatProductDisplayName,
+  getProductById,
+  getVariantLabel,
+  parseCartLineId,
+} from "@/constants/data";
 
 /* -------------------------------------------------------------------------- */
 /* Stripe Checkout Session API                                                 */
@@ -8,10 +13,13 @@ import { PRODUCTS } from "@/constants/data";
 /* 安全原則：價格以伺服器端 PRODUCTS 為準，不信任前端傳來的 price               */
 /* -------------------------------------------------------------------------- */
 
-/** 請求 body 中的購物車項目（前端只傳 id + quantity） */
+/** 請求 body 中的購物車項目（前端只傳 id + quantity；可選 variant） */
 type CheckoutRequestItem = {
+  /** 列 id（可為 productId 或 productId__variantId） */
   id: string;
   quantity: number;
+  productId?: string;
+  variantId?: string;
   /** 以下欄位僅供顯示／除錯，實際金額以後端資料庫為準 */
   name?: string;
   price?: number;
@@ -78,15 +86,29 @@ export async function POST(request: Request) {
         );
       }
 
-      const product = PRODUCTS.find((p) => p.id === item.id);
+      const parsed = parseCartLineId(item.id);
+      const productId = item.productId || parsed.productId;
+      const variantId = item.variantId || parsed.variantId;
+
+      const product = getProductById(productId);
       if (!product) {
         return NextResponse.json(
-          { error: `找不到商品：${item.id}` },
+          { error: `找不到商品：${productId}` },
           { status: 400 },
         );
       }
 
+      if (product.variants?.length) {
+        if (!variantId || !getVariantLabel(product, variantId)) {
+          return NextResponse.json(
+            { error: `商品「${product.name}」需要選擇有效規格` },
+            { status: 400 },
+          );
+        }
+      }
+
       const quantity = Math.min(Math.floor(item.quantity), 99);
+      const displayName = formatProductDisplayName(product, variantId);
 
       // Stripe 以「最小貨幣單位」計價：HKD 的 1 元 = 100 分
       // 例如 HK$10 → unit_amount: 1000
@@ -106,7 +128,7 @@ export async function POST(request: Request) {
           currency: "hkd",
           unit_amount: Math.round(product.price * 100),
           product_data: {
-            name: product.name,
+            name: displayName,
             description: product.description.slice(0, 500),
             ...(canUseImage ? { images: [encodedImage] } : {}),
           },

@@ -110,7 +110,7 @@ function FeaturedGallery() {
 
                 <div className="mt-5 flex justify-center">
                   <Link
-                    href="/products"
+                    href={`/products/${product.id}`}
                     className="inline-flex border border-gold/70 px-6 py-2.5 text-xs tracking-[0.2em] text-foreground transition-colors duration-300 hover:border-gold hover:bg-gold hover:text-surface"
                   >
                     查看詳情

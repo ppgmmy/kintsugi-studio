@@ -8,14 +8,22 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { Product } from "@/constants/data";
+import {
+  formatProductDisplayName,
+  getCartLineId,
+  type Product,
+} from "@/constants/data";
 
 /* -------------------------------------------------------------------------- */
 /* 購物車項目型別                                                              */
 /* -------------------------------------------------------------------------- */
 
 export type CartItem = {
+  /** 列唯一鍵（含規格時為 productId__variantId） */
   id: string;
+  productId: string;
+  variantId?: string;
+  variantLabel?: string;
   name: string;
   /** 單價（港幣） */
   price: number;
@@ -23,14 +31,18 @@ export type CartItem = {
   quantity: number;
 };
 
+export type AddToCartOptions = {
+  variantId?: string;
+};
+
 type CartContextValue = {
   items: CartItem[];
-  /** 加入購物車（已存在則數量 +1） */
-  addToCart: (product: Product) => void;
-  /** 依商品 id 完全移出購物車 */
-  removeFromCart: (productId: string) => void;
+  /** 加入購物車（已存在則數量 +1；有規格時須傳 variantId） */
+  addToCart: (product: Product, options?: AddToCartOptions) => void;
+  /** 依列 id 完全移出購物車 */
+  removeFromCart: (lineId: string) => void;
   /** 設定數量（小於 1 則移除） */
-  updateQuantity: (productId: string, quantity: number) => void;
+  updateQuantity: (lineId: string, quantity: number) => void;
   /** 清空購物車 */
   clearCart: () => void;
   /** 購物車內商品總件數（加總 quantity） */
@@ -48,40 +60,64 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  const addToCart = useCallback((product: Product) => {
-    setItems((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item,
-        );
+  const addToCart = useCallback(
+    (product: Product, options?: AddToCartOptions) => {
+      const variantId = options?.variantId;
+      if (product.variants?.length && !variantId) {
+        throw new Error("此商品需要選擇規格後才能加入購物車");
       }
-      return [
-        ...prev,
-        {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          quantity: 1,
-        },
-      ];
-    });
+      if (
+        variantId &&
+        product.variants?.length &&
+        !product.variants.some((variant) => variant.id === variantId)
+      ) {
+        throw new Error("所選規格不存在");
+      }
+
+      const lineId = getCartLineId(product.id, variantId);
+      const variantLabel = product.variants?.find(
+        (variant) => variant.id === variantId,
+      )?.label;
+      const name = formatProductDisplayName(product, variantId);
+
+      setItems((prev) => {
+        const existing = prev.find((item) => item.id === lineId);
+        if (existing) {
+          return prev.map((item) =>
+            item.id === lineId
+              ? { ...item, quantity: item.quantity + 1 }
+              : item,
+          );
+        }
+        return [
+          ...prev,
+          {
+            id: lineId,
+            productId: product.id,
+            variantId,
+            variantLabel,
+            name,
+            price: product.price,
+            image: product.image,
+            quantity: 1,
+          },
+        ];
+      });
+    },
+    [],
+  );
+
+  const removeFromCart = useCallback((lineId: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== lineId));
   }, []);
 
-  const removeFromCart = useCallback((productId: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== productId));
-  }, []);
-
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
+  const updateQuantity = useCallback((lineId: string, quantity: number) => {
     setItems((prev) => {
       if (quantity < 1) {
-        return prev.filter((item) => item.id !== productId);
+        return prev.filter((item) => item.id !== lineId);
       }
       return prev.map((item) =>
-        item.id === productId ? { ...item, quantity } : item,
+        item.id === lineId ? { ...item, quantity } : item,
       );
     });
   }, []);

@@ -5,7 +5,7 @@ import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 export const metadata: Metadata = {
   title: "常規商品｜Kintsugi Studio 繕物誌",
   description:
-    "瀏覽繕物誌手作選品——金繕成品、DIY 工具包與陶藝器具，每一件都帶著獨一無二的痕跡。",
+    "瀏覽繕物誌手作選品——香味蠟燭、天然護理與精選套裝，每一件都帶著手作溫度。",
 };
 
 /* -------------------------------------------------------------------------- */
