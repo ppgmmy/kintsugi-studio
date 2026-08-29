@@ -81,7 +81,7 @@ export function ProductCatalog() {
         共 {filtered.length} 件選品
       </p>
 
-      <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-8 sm:gap-y-14">
+      <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-14">
         {filtered.map((product) => (
           <li key={product.id} className="animate-fade-up group">
             <article className="flex h-full flex-col">
@@ -91,7 +91,7 @@ export function ProductCatalog() {
                   alt={product.name}
                   fill
                   className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                  sizes="(max-width: 640px) 50vw, 50vw"
+                  sizes="(max-width: 1024px) 50vw, 33vw"
                 />
                 <div
                   className="pointer-events-none absolute inset-4 border border-gold/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
